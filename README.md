@@ -1,6 +1,6 @@
 # ExpenseTrackerWeb
 Its lil  kinda web hopin
-# 💰 ExpenseTrackerWeb
+
 
 A simple and elegant web-based expense tracker built with **Flask** and **Bootstrap**.  
 Track your daily expenses, view insights, and stay on top of your budget. 🚀
