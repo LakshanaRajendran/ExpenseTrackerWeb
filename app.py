@@ -1,33 +1,52 @@
 from flask import Flask, render_template, request, redirect, url_for
+from collections import defaultdict
+from datetime import datetime
 
 app = Flask(__name__)
 
-# Store expenses as a list of dicts
+# Temporary storage (replace with DB later)
 expenses = []
 
-# Home route
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return redirect(url_for("view_expenses"))
 
-# Add expense route
 @app.route("/add", methods=["GET", "POST"])
 def add_expense():
     if request.method == "POST":
-        expense = {
-            "description": request.form["description"],
-            "amount": request.form["amount"],
-            "category": request.form["category"],
-            "date": request.form["date"]
-        }
-        expenses.append(expense)
+        description = request.form["description"]
+        amount = float(request.form["amount"])
+        category = request.form["category"]
+        date = request.form["date"] or datetime.today().strftime("%Y-%m-%d")
+
+        expenses.append({
+            "description": description,
+            "amount": amount,
+            "category": category,
+            "date": date
+        })
+
         return redirect(url_for("view_expenses"))
+
     return render_template("add_expense.html")
 
-# View expenses route
 @app.route("/view")
 def view_expenses():
-    return render_template("view_expenses.html", expenses=expenses)
+    # Calculate total
+    total_spent = sum(e["amount"] for e in expenses)
+
+    # Aggregate totals by category
+    category_totals = defaultdict(float)
+    for e in expenses:
+        category_totals[e["category"]] += e["amount"]
+
+    return render_template(
+        "view_expenses.html",
+        expenses=expenses,
+        total_spent=total_spent,
+        category_labels=list(category_totals.keys()),
+        category_data=list(category_totals.values())
+    )
 
 if __name__ == "__main__":
     app.run(debug=True)
