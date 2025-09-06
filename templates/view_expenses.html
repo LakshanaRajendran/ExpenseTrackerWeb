@@ -1,22 +1,23 @@
 {% extends "base.html" %}
 {% block title %}View Expenses - Expense Tracker{% endblock %}
 {% block content %}
-<div class="card p-4 shadow">
-  <h2 class="mb-3">Your Expenses</h2>
+<div class="card p-4">
+  <h2 class="mb-3">📊 Your Expenses</h2>
 
   {% if expenses %}
+    <!-- Total -->
     <h4 class="mb-3 text-success">
-      Total Spent: ₹{{ total_spent }}
+      ✅ Total Spent: ₹{{ expenses | sum(attribute='amount') | float }}
     </h4>
 
     <!-- Table -->
-    <table class="table table-striped table-bordered">
+    <table class="table table-hover table-bordered">
       <thead class="table-dark">
         <tr>
-          <th>Description</th>
-          <th>Amount</th>
-          <th>Category</th>
-          <th>Date</th>
+          <th>📝 Description</th>
+          <th>💵 Amount</th>
+          <th>📂 Category</th>
+          <th>📅 Date</th>
         </tr>
       </thead>
       <tbody>
@@ -31,8 +32,8 @@
       </tbody>
     </table>
 
-    <!-- Pie Chart -->
-    <h5 class="mt-4">Expenses by Category</h5>
+    <!-- Chart -->
+    <h5 class="mt-4">Expenses Breakdown</h5>
     <canvas id="expenseChart"></canvas>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
@@ -40,16 +41,27 @@
       new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: {{ category_labels | tojson }},
+          labels: [{% for e in expenses %}'{{ e.category }}',{% endfor %}],
           datasets: [{
-            data: {{ category_data | tojson }},
-            backgroundColor: ['#007bff','#28a745','#ffc107','#dc3545','#6f42c1','#17a2b8','#6f42c1']
+            label: 'Expenses by Category',
+            data: [{% for e in expenses %}{{ e.amount }},{% endfor %}],
+            backgroundColor: ['#007bff','#28a745','#ffc107','#dc3545','#6f42c1']
           }]
-        }
+        },
+        options: { responsive: true }
       });
     </script>
+
+    <!-- Budget Progress (sample) -->
+    <h5 class="mt-4">Budget Progress</h5>
+    <div class="progress mb-3">
+      <div class="progress-bar bg-danger" role="progressbar" style="width: 65%;">
+        65% of Food Budget Used
+      </div>
+    </div>
+
   {% else %}
-    <p class="text-muted">No expenses added yet. <a href="/add">Add one now</a>.</p>
+    <p class="text-muted">No expenses added yet. <a href="/add">➕ Add one now</a>.</p>
   {% endif %}
 </div>
 {% endblock %}
