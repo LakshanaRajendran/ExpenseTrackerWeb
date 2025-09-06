@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Add Expense - Expense Tracker{% endblock %}
+{% block content %}
+<div class="card p-4">
+  <h2 class="mb-3">Add a New Expense</h2>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">Description</label>
+      <input type="text" name="description" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Amount</label>
+      <input type="number" name="amount" class="form-control" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Category</label>
+      <select name="category" class="form-select" required>
+        <option value="Food">🍔 Food</option>
+        <option value="Transport">🚌 Transport</option>
+        <option value="Shopping">🛍 Shopping</option>
+        <option value="Bills">💡 Bills</option>
+        <option value="Other">📌 Other</option>
+      </select>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" name="date" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-success">Add Expense</button>
+  </form>
+</div>
+{% endblock %}
